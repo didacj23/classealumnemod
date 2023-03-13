@@ -11,8 +11,8 @@ namespace classealumneprojecte
         //Atributs
         private string nom;
         private const int mida_per_defecte=5; //mida màxima per defecte
-        Alumne[] alumnes; //array tipus alumne
-        int pos_ultim_element;
+        private Alumne[] alumnes; //array tipus alumne
+        private int pos_ultim_element;
 
         //Constructors
         public Modul(int mida)
@@ -35,7 +35,7 @@ namespace classealumneprojecte
 
             m2.Nom=m1.Nom;
             m2.alumnes=m1.alumnes;
-            m2.pos_ultim_element=m1.pos_ultim_element;
+            m2.NumAlumnes=m1.NumAlumnes;
         }
 
         
@@ -43,6 +43,7 @@ namespace classealumneprojecte
         public int NumAlumnes
         {
             get {return pos_ultim_element+1;}
+            set { pos_ultim_element=value;}
         }
 
         public string Nom
@@ -50,6 +51,24 @@ namespace classealumneprojecte
             get { return  nom; }
             set { nom = value; }
         }
+
+
+        //Indexadors
+
+        //Mètode privat index
+        private int Index(string possible_nom_nif)
+        {
+            int index=0;
+
+            for(int i = 0; i<NumAlumnes; i++)
+            {
+                if (possible_nom_nif == alumnes[i].nif) index=i; //es un nif
+                else if (possible_nom_nif == alumnes[i].Nom+" " + alumnes[i].Cognom) index=i; //es un cognom
+            }
+
+            return index;
+        }
+
 
         //Mètodes públics
         public void Afegir(Alumne a)
@@ -59,6 +78,20 @@ namespace classealumneprojecte
             alumnes[pos_ultim_element+1] = a;
             pos_ultim_element++;
         }
+
+        /*public void Modificar(Alumne a)
+        {
+            int index=0;
+
+            for(int i=0;i<a.NumAlumnes-1;i++)
+            {
+                if (a.Nom == alumnes[i].Nom)index=i;
+            }
+
+            index=alumnes.IndexOf(alumnes,a.Nom==alumnes.Nom);
+        }*/
+
+
 
         public string ToString()
         {
