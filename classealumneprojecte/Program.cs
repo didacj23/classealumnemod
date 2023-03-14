@@ -4,13 +4,15 @@
     {
         static void Main(string[] args)
         {
+
+
             Console.WriteLine("1. Crear mòdul\n"+
                               "2. Mostrar mòduls\n"+
                               "3. Afegir alumnes al mòdul\n"+                             
-                              "4. Modificar alumne\n"+
-                              "5. Eliminar alumne\n"+
-                              "6. Consultar alumne\n"+
-                              "7. Mostrar telèfon");
+                              "4. Modificar alumne del modul\n"+
+                              "5. Eliminar alumne del modul\n"+
+                              "6. Consultar alumne modul\n"+
+                              "7. Mostrar telèfon alumne modul");
             Console.WriteLine("Introdueix una opció: (1-9) ");
             int opcio=Convert.ToInt32(Console.ReadLine());
 
@@ -31,7 +33,7 @@
                     break;
 
                 case 3:
-
+                    
                     break;
 
                 case 4:

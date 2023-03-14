@@ -62,7 +62,7 @@ namespace classealumneprojecte
             for(int i = 0; i<NumAlumnes; i++)
             {
                 if (possible_nom_nif == alumnes[i].nif) index=i; //es un nif
-                else if (possible_nom_nif == alumnes[i].Nom+" " + alumnes[i].Cognom) index=i; //es un cognom
+                else if (possible_nom_nif == alumnes[i].Nom+" " + alumnes[i].Cognom) index=i; //es un nom complet
             }
 
             return index;
@@ -70,10 +70,13 @@ namespace classealumneprojecte
 
 
         //Indexadors
-        public string this[int index]
-        {
-            get { }
-            set { }
+        public Alumne this[string possible_nom_nif]
+        {            
+            get{
+                int index=0;
+                index=Index(possible_nom_nif);                
+                return alumnes[index];
+            }
         }
 
 
@@ -99,11 +102,21 @@ namespace classealumneprojecte
 
         public void Eliminar(string nom_complet)
         {
+            int index=Index(nom_complet);
 
+            for(int i=index; i<pos_ultim_element-1; i++)
+            {
+                alumnes[i] = alumnes[i+1];
+                pos_ultim_element--;
+            }
         }
 
-        public Alumne Consultar(string nom_complet)
+        public void Consultar(string nom_complet)
         {
+            int index = 0;
+            index = Index(nom_complet);
+
+            return alumnes[nom_complet];
 
         }
 
@@ -119,7 +132,7 @@ namespace classealumneprojecte
 
 
         //SOBREESCRIPTURA DE MÈTODES
-        public string ToString()
+        public override string ToString()
         {
             string res="";
 
@@ -130,7 +143,16 @@ namespace classealumneprojecte
             return res;
         }        
 
-        //equals, get has code
+        public /*override*/ bool Equals(Modul m) //em fa treure el override
+        {
+            bool iguals=false;
+
+            if(Nom==m.Nom)iguals=true;
+
+            return iguals;
+        }
+
+        //public override int GetHashCode();
         
     }
 }
