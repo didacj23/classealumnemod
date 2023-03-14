@@ -14,6 +14,7 @@ namespace classealumneprojecte
         private Alumne[] alumnes; //array tipus alumne
         private int pos_ultim_element;
 
+
         //Constructors
         public Modul(int mida)
         {
@@ -53,12 +54,10 @@ namespace classealumneprojecte
         }
 
 
-        //Indexadors
-
         //Mètode privat index
         private int Index(string possible_nom_nif)
         {
-            int index=0;
+            int index=-1;
 
             for(int i = 0; i<NumAlumnes; i++)
             {
@@ -67,6 +66,14 @@ namespace classealumneprojecte
             }
 
             return index;
+        }
+
+
+        //Indexadors
+        public string this[int index]
+        {
+            get { }
+            set { }
         }
 
 
@@ -79,20 +86,39 @@ namespace classealumneprojecte
             pos_ultim_element++;
         }
 
-        /*public void Modificar(Alumne a)
+        public void Modificar(Alumne a)
         {
-            int index=0;
+            int index=Index(a.Nom+" "+a.Cognom); //?
 
-            for(int i=0;i<a.NumAlumnes-1;i++)
+            if(index!=-1)
             {
-                if (a.Nom == alumnes[i].Nom)index=i;
+                alumnes[index] = a;
             }
 
-            index=alumnes.IndexOf(alumnes,a.Nom==alumnes.Nom);
-        }*/
+        }
+
+        public void Eliminar(string nom_complet)
+        {
+
+        }
+
+        public Alumne Consultar(string nom_complet)
+        {
+
+        }
+
+        public string GetTelefon(string nom_alumne)
+        {
+            string telefon="";
+            int index=Index(nom_alumne);
+
+            if(index!=-1) telefon = alumnes[index].Telefon;            
+
+            return telefon;
+        }
 
 
-
+        //SOBREESCRIPTURA DE MÈTODES
         public string ToString()
         {
             string res="";
@@ -102,8 +128,9 @@ namespace classealumneprojecte
                 res += alumnes[i]+",";
             }
             return res;
-        }
+        }        
 
+        //equals, get has code
         
     }
 }
