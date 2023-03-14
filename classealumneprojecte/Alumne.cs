@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace classealumneprojecte
         private DateTime dataNaixement;
         private char sexe;
         private String email;
-        private int telefon;
+        private string telefon;
         private int numAlumnes = 0;
 
         //constructors
@@ -28,7 +30,7 @@ namespace classealumneprojecte
             this.dataNaixement = DateTime.MinValue;
             this.sexe = ' ';
             this.email = "";
-            this.telefon = 0;
+            this.telefon = "";
             this.numAlumnes = 0;
         }
 
@@ -39,7 +41,7 @@ namespace classealumneprojecte
             Nif = nif;
         }
 
-        public Alumne(string nom, string cognom, string nif, DateTime dataNaixement, char sexe, string email, int telefon, int numAlumnes)
+        public Alumne(string nom, string cognom, string nif, DateTime dataNaixement, char sexe, string email, string telefon, int numAlumnes)
         {
             this.nom = nom;
             this.cognom = cognom;
@@ -48,7 +50,7 @@ namespace classealumneprojecte
             this.sexe = sexe;
             this.email = email;
             this.telefon = telefon;
-            this.numAlumnes = numAlumnes;
+            numAlumnes++;
         }
 
         public Alumne(Alumne altreAlumne)
@@ -70,118 +72,215 @@ namespace classealumneprojecte
         public string Nom
         {
             get { return nom; }
-            set
-            {
-                foreach (char i in value)
-                {
-                    if (Char.IsDigit(i))
-                    {
-                        throw new ArgumentException("El nom no pot contenir números");
-                    }
-                }
-                nom = value;
-            }
+            set { nom = NomValid(value); }
         }
 
 
         public string Cognom
         {
             get { return cognom; }
-            set
-            {
-                foreach (char i in value)
-                {
-                    if (Char.IsDigit(i))
-                    {
-                        throw new ArgumentException("El Cognom no pot contenir números");
-                    }
-                }
-                nom = value;
-            }
+            set { cognom = CognomValid(value); }
         }
 
         public string Nif
         {
             get { return nif; }
-            set
-            {
-                string patro = @"^\d{8}[A-Z]$";
-                if (Regex.IsMatch(value, patro))
-                {
-                    nif = value;
-                }
-                else
-                {
-                    throw new ArgumentException("El valor del NIF no té el format correcte.");
-                }
-            }
+            set { nif = NifValid(value); }
 
         }
 
-        //Per a la propietat de data de naixament he escollit un rang d'edat d'entre 0 a 20 anys
-
-        public DateTime DataNaixament
+        public DateTime DataNaixement
         {
             get { return dataNaixement; }
-            set
-            {
-                DateTime avui = DateTime.Today;
-                DateTime fa20Anys = avui.AddYears(-20);
-                if (value >= fa20Anys && value <= avui)
-                {
-                    dataNaixement = value;
-                }
-                else
-                {
-                    throw new ArgumentException("La data de data naixement ha de ser dins dels últims 20 anys.");
-                }
-            }
+            set { dataNaixement = DataValid(value); }
         }
 
         public char Sexe
         {
             get { return sexe; }
-            set
-            {
-                if(sexe != 'H' || sexe != 'D')
-                {
-                    throw new ArgumentException("El valor ha de ser H o D, recorda que s'ha d'escriure amb majúscules");
-                }
-                else
-                {
-                    sexe = value;
-                }
-            }
+            set { sexe = value; }
         }
 
         public string Email
         {
             get { return email; }
-            set
-            {
-                string patro = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|cat|es)$";
-                if (Regex.IsMatch(value, patro))
-                {
-                    email = value;
-                }
-                else
-                {
-                    throw new ArgumentException("El format de l'email no és vàlid.");
-                }
-            }
+            set { email = EmailValid(value); }
         }
 
-        public int Telefon
+        public string Telefon
         {
             get { return telefon; }
-            set { telefon = value; }
+            set { telefon = TelfValid(value); }
         }
 
         public int NumAlumnes
         {
             get { return numAlumnes; }
-            set { numAlumnes = value; }
+            set { numAlumnes = NumALumnes(value); }
         }
+
+        //métodes publics
+
+        public int Edat()
+        {
+            int edat = DateTime.Today.Year - dataNaixement.Year;
+            if(DateTime.Today.Month < dataNaixement.Month || DateTime.Today.Month == dataNaixement.Month && DateTime.Today.Day < dataNaixement.Day)
+            {
+                edat--;
+            }
+
+            return edat;
+        }
+
+        public int NumALumnes(int numAlumnes)
+        {
+            return numAlumnes;
+        }
+
+        public void Mostrar()
+        {
+            Console.WriteLine("Nom: " + Nom);
+            Console.WriteLine("Cognom: " + Cognom);
+            Console.WriteLine("NIF: " + Nif);
+            Console.WriteLine("Data de naixement: " + dataNaixement.ToString("dd/MM/yyyy"));
+            Console.WriteLine("Edat: " + Edat() + " anys");
+            Console.WriteLine("Sexe: " + Sexe);
+            Console.WriteLine("Email: " + Email);
+            Console.WriteLine("Telefon: " + Telefon);
+            Console.WriteLine("Nombre d'alumnes: " + NumAlumnes);
+
+        }
+
+        //Sobreescriptura de mètodes
+
+        public override string ToString()
+        {
+            return $"Nom: {nom}\nCognom: {cognom}\nNIF: {nif}\nData de naixement: {dataNaixement.ToShortDateString()}\nSexe: {sexe}\nEmail: {email}\nTelèfon: {telefon}\n";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            Alumne other = (Alumne)obj;
+            return Nif == other.Nif;
+        }
+
+        //Sobrecarrega operadors
+
+        public static bool operator ==(Alumne a, Alumne b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (a is null || b is null)
+            {
+                return false;
+            }
+
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Alumne a, Alumne b)
+        {
+            return !(a == b);
+        }
+
+
+
+        //métodes privats
+
+        private string NomValid(string nom)
+        {
+
+            //Ho he trobat a stackoverflow es una manera de revisar que tots els caracters del string siguin lletres
+            //amb l'exclamació invertim el valor de la condicio en cas de que no es compleixi el resultat sera true
+            //el .all serveix per agafar tota la cadena la c es la variable que representa tots els caracters i chaar.IsLetter
+            //comprova que la variable c en tot moments sigui una lletra
+
+            while (!nom.All(c => char.IsLetter(c)))
+            {
+                Console.WriteLine("El nom no és valid, introdueix un de nou");
+                nom = Console.ReadLine();
+            }
+
+            return nom;
+        }
+
+        private string CognomValid(string cognom)
+        {
+            while (!cognom.All(c => char.IsLetter(c)))
+            {
+                Console.WriteLine("El cognom no és valid, introdueix un de nou");
+                cognom = Console.ReadLine();
+            }
+
+            return cognom;
+        }
+
+        private string NifValid(string nif)
+        {
+            string patro = @"^\d{8}[A-Z]$";
+            while (!Regex.IsMatch(nif, patro))
+            {
+                Console.WriteLine("Introdueix un NIF vàlid");
+                nif = Console.ReadLine();
+            }
+
+            return nif;
+        }
+
+        private DateTime DataValid(DateTime dataNaixement)
+        {
+            DateTime avui = DateTime.Now;
+            bool valid = true;
+
+            while (valid)
+            {
+                if (dataNaixement > avui)
+                {
+                    Console.WriteLine("La data de naixement es incorrecte, torna a introduir-la");
+                    dataNaixement = Convert.ToDateTime(Console.ReadLine());
+                }
+                else
+                    valid = false;
+
+
+            }
+
+            return dataNaixement;
+        }
+
+        private string EmailValid(string email)
+        {
+            string patro = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|cat|es)$";
+            
+            while(!Regex.IsMatch(email, patro))
+            {
+                Console.WriteLine("Introdueix un email vàlid");
+                email = Console.ReadLine();
+            }
+
+            return email;
+        }
+
+        private string TelfValid(string telf)
+        {
+            while(!telf.All(c => char.IsDigit(c)))
+            {
+                Console.WriteLine("Introdueix un número vàlid");
+                telf = Console.ReadLine();
+            }
+
+            return telf;
+        }
+
+        
 
 
     }
